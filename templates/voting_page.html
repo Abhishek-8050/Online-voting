@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Voting Page</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .card {
+      border-radius: 15px;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: scale(1.02);
+    }
+    .avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+    .btn-vote {
+      background: #4facfe;
+      color: white;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .btn-vote:hover {
+      background: #007bff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+    <h2 class="text-center mb-4">🗳️ Cast Your Vote</h2>
+    <form method="post">
+      {% csrf_token %}
+      <div class="row g-4">
+        {% for candidate in candidates %}
+        <div class="col-md-4">
+          <div class="card text-center p-3">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="avatar" class="avatar mx-auto">
+            <h5 class="fw-bold">{{ candidate.name }}</h5>
+            <p class="text-muted">{{ candidate.party }}</p>
+            <button type="submit" name="vote" value="{{ candidate.id }}" class="btn btn-vote mt-2">Vote</button>
+          </div>
+        </div>
+        {% empty %}
+        <p class="text-center text-danger">No candidates available for this code.</p>
+        {% endfor %}
+      </div>
+    </form>
+  </div>
+</body>
+</html>

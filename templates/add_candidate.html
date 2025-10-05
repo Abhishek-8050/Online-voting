@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Candidate</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: #fff;
+      width: 450px;
+      padding: 30px 40px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 25px;
+      color: #333;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin: 10px 0 6px;
+      font-weight: bold;
+      color: #444;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 18px;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #4facfe;
+      box-shadow: 0 0 6px rgba(79, 172, 254, 0.5);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, #00c6fb, #005bea);
+    }
+
+    .candidate-list {
+      margin-top: 25px;
+      text-align: left;
+    }
+
+    .candidate-list h3 {
+      font-size: 18px;
+      margin-bottom: 12px;
+      color: #333;
+    }
+
+    .candidate-item {
+      background: #f7f7f7;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border-left: 5px solid #4facfe;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🗳️ Add New Candidate</h2>
+
+    <form method="POST">
+  {% csrf_token %}
+  <label for="candidateName">Candidate Name:</label>
+  <input type="text" name="candidateName" id="candidateName" required>
+
+  <!-- ✅ hidden field admin code ke liye -->
+  <input type="hidden" name="admin_code" value="{{ admin_code }}">
+
+  <button type="submit" class="btn">➕ Add Candidate</button>
+</form>
+
+
+    {% if candidates %}
+      <div class="candidate-list">
+        <h3>📋 Candidate List</h3>
+        {% for c in candidates %}
+          <div class="candidate-item">
+            <strong>{{ c.name }}</strong> — {{ c.unique_code }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>
