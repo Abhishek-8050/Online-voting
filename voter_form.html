@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Voter Form</title>
+  <style>
+    :root{--bg:linear-gradient(135deg,#f0f7ff,#e6fbff);--card:#ffffff;--accent:#0b84ff}
+    body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:var(--bg);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .card{background:var(--card);width:420px;max-width:96%;padding:24px;border-radius:12px;box-shadow:0 8px 30px rgba(15,23,42,.08)}
+    h1{margin:0 0 12px;font-size:20px;color:#16324f;text-align:center}
+    p.small{margin:0 0 18px;color:#476582;text-align:center;font-size:13px}
+    label{display:block;margin-bottom:10px;font-size:14px;color:#234}
+    input[type="text"],input[type="tel"],input[type="email"]{
+      width:100%;padding:11px 12px;border:1px solid #d6e3f0;border-radius:8px;font-size:15px;box-sizing:border-box;
+    }
+    .row{margin-bottom:12px}
+    .hint{font-size:12px;color:#6b7f93;margin-top:6px}
+    .btn{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-weight:600;font-size:16px;cursor:pointer;margin-top:8px}
+    .btn:active{transform:translateY(1px)}
+    .msg{padding:10px;border-radius:8px;margin-bottom:12px;font-size:14px}
+    .error{background:#ffeeee;color:#8a1f1f;border:1px solid #f1c0c0}
+    .success{background:#eef9f1;color:#1b6a3a;border:1px solid #cfeac8}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Voter Form</h1>
+    <p class="small">Apna details bharein aur admin dwara diya gaya unique code dalein</p>
+
+    {# optional error message passed from view #}
+    {% if error %}
+      <div class="msg error">{{ error }}</div>
+    {% endif %}
+
+    {# optional Django messages framework #}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="msg {% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" action="{% url 'voter_form' %}">
+      {% csrf_token %}
+      <div class="row">
+        <label for="id_name">Full name</label>
+        <input id="id_name" name="name" type="text" placeholder="Your full name" required maxlength="100" autocomplete="name">
+      </div>
+
+      <div class="row">
+        <label for="id_phone">Phone number</label>
+        <input id="id_phone" name="phone" type="tel" placeholder="10-digit phone" required pattern="\d{10}" title="10-digit phone number" maxlength="10" autocomplete="tel">
+        <div class="hint">Sirf digits (10)</div>
+      </div>
+
+      <div class="row">
+        <label for="id_email">Email</label>
+        <input id="id_email" name="email" type="email" placeholder="example@gmail.com" required maxlength="254" autocomplete="email">
+      </div>
+
+      <div class="row">
+        <label for="id_code">Unique code</label>
+        <input id="id_code" name="unique_code" type="text" placeholder="Enter unique code" required maxlength="20" autocomplete="off" style="text-transform:uppercase;">
+        <div class="hint">Code admin ne generate karke diya hoga (case-insensitive)</div>
+      </div>
+
+      <button class="btn" type="submit">Submit</button>
+    </form>
+  </div>
+</body>
+</html>

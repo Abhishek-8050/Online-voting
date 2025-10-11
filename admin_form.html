@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            width: 400px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        input[type="text"], 
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input[type="text"]:focus, 
+        input[type="email"]:focus {
+            border-color: #2575fc;
+            box-shadow: 0 0 8px rgba(37,117,252,0.3);
+        }
+
+        .btn {
+            background: #2575fc;
+            color: #fff;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #1a5ed9;
+        }
+
+        .btn-secondary {
+            background: #6a11cb;
+        }
+
+        .btn-secondary:hover {
+            background: #500fa8;
+        }
+    </style>
+    <script>
+        function generateCode() {
+            let code = "ADM" + Math.floor(100000 + Math.random() * 900000); 
+            document.getElementById("unique_code").value = code;
+        }
+    </script>
+</head>
+<body>
+    <div class="form-container">
+        <h2>👨‍💼 Admin Registration</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            <label for="name">Admin Name:</label>
+            <input type="text" name="name" required>
+
+            <label for="phone">Phone Number:</label>
+            <input type="text" name="phone" required>
+
+            <label for="email">Email:</label>
+            <input type="email" name="email" required>
+
+            <label for="unique_code">Unique Code:</label>
+            <input type="text" id="unique_code" name="unique_code" readonly>
+            <button type="button" class="btn btn-secondary" onclick="generateCode()">Generate Code</button>
+
+            <br><br>
+          <button type="submit" class="btn">Submit</button>
+
+        </form>
+    </div>
+</body>
+</html>
