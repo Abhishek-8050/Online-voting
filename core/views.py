@@ -4,9 +4,9 @@ from .models import Candidate, Voter, AdminUser   # AdminUser bhi import karo
 import random
 
 
-# Home page
-def home(request):
-    return render(request, "home.html")  # Temporary for testing  
+# index page
+def index(request):
+    return render(request, "index.html")  # Temporary for testing  
 
 
 from django.shortcuts import render, redirect
@@ -14,9 +14,9 @@ from django.http import HttpResponse
 from .models import Candidate, Voter, AdminUser
 import random
 
-# Home page
-def home(request):
-    return render(request, "home.html")
+# index page
+def index(request):
+    return render(request, "index.html")
 
 # Admin form → submit ke baad add_candidate page pe bhejna hai
 def admin_form(request):
