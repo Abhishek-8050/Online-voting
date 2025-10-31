@@ -27,6 +27,10 @@ urlpatterns = [
     path("voting/<str:unique_code>/", views.voting_page, name="voting_page"),
     path("time-limit/", views.time_limit, name="time_limit"),
     path("thank-you/", views.thank_you, name="thank_you"),
+    path("vote-counting/<str:unique_code>/", views.vote_counting, name="vote_counting"),
+    path('results/<str:unique_code>/', views.results_page, name='results'),
+
+
 
     
 ]

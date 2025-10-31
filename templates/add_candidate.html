@@ -88,6 +88,25 @@
       border-radius: 8px;
       border-left: 5px solid #4facfe;
     }
+
+    /* ✅ Vote Counting button styling */
+    .count-btn {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      background: linear-gradient(135deg, #00c6fb, #005bea);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .count-btn:hover {
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+    }
   </style>
 </head>
 <body>
@@ -95,16 +114,15 @@
     <h2>🗳️ Add New Candidate</h2>
 
     <form method="POST">
-  {% csrf_token %}
-  <label for="candidateName">Candidate Name:</label>
-  <input type="text" name="candidateName" id="candidateName" required>
+      {% csrf_token %}
+      <label for="candidateName">Candidate Name:</label>
+      <input type="text" name="candidateName" id="candidateName" required>
 
-  <!-- ✅ hidden field admin code ke liye -->
-  <input type="hidden" name="admin_code" value="{{ admin_code }}">
+      <!-- ✅ hidden field admin code ke liye -->
+      <input type="hidden" name="admin_code" value="{{ admin_code }}">
 
-  <button type="submit" class="btn">➕ Add Candidate</button>
-</form>
-
+      <button type="submit" class="btn">➕ Add Candidate</button>
+    </form>
 
     {% if candidates %}
       <div class="candidate-list">
@@ -116,6 +134,11 @@
         {% endfor %}
       </div>
     {% endif %}
+
+    <!-- ✅ New Vote Counting Button -->
+   <a href="{% url 'vote_counting' admin_code %}" class="count-btn">📊 View Vote Counting</a>
+
+
   </div>
 </body>
 </html>

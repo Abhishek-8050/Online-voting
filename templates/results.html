@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Voting Results</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      margin: 0;
+      padding: 0;
+      color: #333;
+      overflow-x: hidden;
+      animation: fadeIn 1s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      max-width: 750px;
+      margin: 60px auto;
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      padding: 40px 50px;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    h1 {
+      color: #005bea;
+      margin-bottom: 10px;
+      font-size: 32px;
+      animation: fadeIn 1.2s ease-in;
+    }
+
+    h3 {
+      margin-top: 0;
+      color: #666;
+      font-weight: 500;
+      animation: fadeIn 1.4s ease-in;
+    }
+
+    .winner-card {
+      background: linear-gradient(135deg, #ffcc70, #ffb347);
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(255, 179, 71, 0.6);
+      margin: 25px 0;
+      color: #333;
+      animation: pop 0.8s ease-out;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .winner-card h2 {
+      font-size: 28px;
+      margin: 0;
+      color: #222;
+    }
+
+    .winner-card p {
+      font-size: 18px;
+      margin-top: 5px;
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 25px;
+      animation: fadeIn 1.5s ease-in;
+    }
+
+    .results-table th, .results-table td {
+      border-bottom: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+
+    .results-table th {
+      background: #4facfe;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .results-table tr:hover {
+      background: #f1f9ff;
+      transition: 0.3s;
+    }
+
+    .no-votes {
+      color: #888;
+      margin-top: 25px;
+      font-style: italic;
+    }
+
+    .home-btn {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 12px 25px;
+      background: linear-gradient(135deg, #00c6fb, #005bea);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .home-btn:hover {
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      transform: translateY(-2px);
+    }
+
+    .footer {
+      margin-top: 35px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    /* 🎉 Confetti Animation */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #ffb347;
+      top: -10px;
+      animation: fall 3s linear infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(100vh) rotate(720deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📊 Voting Results</h1>
+    <h3>Admin: {{ admin.name }} ({{ admin.unique_code }})</h3>
+
+    {% if results %}
+      {% with results.0 as winner %}
+        <div class="winner-card">
+          <h2>🏆 {{ winner.candidate__name }}</h2>
+          <p><strong>{{ winner.total_votes }}</strong> votes</p>
+          <p>🎉 Congratulations to the Winner!</p>
+        </div>
+      {% endwith %}
+
+      <table class="results-table">
+        <tr>
+          <th>Candidate Name</th>
+          <th>Total Votes</th>
+        </tr>
+        {% for r in results %}
+          <tr {% if forloop.first %}style="font-weight:bold;color:#005bea;"{% endif %}>
+            <td>{{ r.candidate__name }}</td>
+            <td>{{ r.total_votes }}</td>
+          </tr>
+        {% endfor %}
+      </table>
+    {% else %}
+      <p class="no-votes">No votes recorded yet for this session.</p>
+    {% endif %}
+
+    <a href="/" class="home-btn">🏠 Back to Home</a>
+
+    <div class="footer">
+      &copy; {{ now|date:"Y" }} Smart Voting System | All Rights Reserved.
+    </div>
+  </div>
+
+  <!-- 🎊 Confetti effect -->
+  <script>
+    function createConfetti() {
+      const confetti = document.createElement('div');
+      confetti.classList.add('confetti');
+      confetti.style.left = Math.random() * 100 + 'vw';
+      confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 60%)`;
+      confetti.style.animationDuration = 2 + Math.random() * 3 + 's';
+      document.body.appendChild(confetti);
+
+      setTimeout(() => confetti.remove(), 5000);
+    }
+
+    setInterval(createConfetti, 150);
+  </script>
+</body>
+</html>

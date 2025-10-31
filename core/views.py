@@ -109,49 +109,47 @@ def voter_form(request):
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from .models import AdminUser, Candidate
+from .models import AdminUser, Candidate, Vote  # ✅ Vote model bhi import karo
 
 def voting_page(request, unique_code):
-    # verify admin / session
+    # ✅ Verify admin
     try:
         admin = AdminUser.objects.get(unique_code=unique_code)
     except AdminUser.DoesNotExist:
         return HttpResponse("❌ Invalid Voting Session Code")
 
-    # only this admin's candidates
+    # ✅ Only that admin's candidates show
     candidates = Candidate.objects.filter(admin=admin)
 
     if request.method == "POST":
-        # accept multiple possible field-names so template change not required
         candidate_id = request.POST.get("candidate_id") or request.POST.get("vote") or request.POST.get("vote_id")
         if not candidate_id:
             return HttpResponse("❌ No candidate selected.")
 
-        # validate id
         try:
             cid = int(candidate_id)
         except (ValueError, TypeError):
             return HttpResponse("❌ Invalid candidate id.")
 
-        # ensure candidate belongs to this admin
-        try:
-            candidate = Candidate.objects.get(id=cid, admin=admin)
-        except Candidate.DoesNotExist:
-            return HttpResponse("❌ Invalid Candidate Selected!")
+        # ✅ Ensure the selected candidate belongs to the same admin
+        candidate = get_object_or_404(Candidate, id=cid, admin=admin)
 
-        # increment votes if model has a votes field (optional)
+        # ✅ Save vote in the Vote model
+        Vote.objects.create(candidate=candidate)
+
+        # ✅ Optionally increase candidate's vote count too (for quick result display)
         if hasattr(candidate, "votes"):
             candidate.votes = (candidate.votes or 0) + 1
             candidate.save()
-        # otherwise, implement Vote model or whatever you prefer
 
-        # redirect to thank you page (add URL + template as below)
+        # ✅ Redirect to thank you page
         return redirect("thank_you")
 
     return render(request, "voting_page.html", {
         "candidates": candidates,
         "unique_code": unique_code
     })
+
 
 
 
@@ -188,6 +186,59 @@ def time_limit(request):
     return render(request, "time_limit.html")
 def thank_you(request):
     return render(request, "thank_you.html")
+
+
+
+#vote counting ke liye
+from django.db.models import Count
+
+def vote_counting(request, unique_code):
+    admin = get_object_or_404(AdminUser, unique_code=unique_code)
+    votes = Vote.objects.filter(candidate__admin=admin)
+    
+    total_votes = votes.count()
+
+    candidate_votes = (
+        votes.values('candidate__name')
+             .annotate(total_votes=Count('id'))
+             .order_by('-total_votes')
+    )
+
+    # Calculate percentage for progress bar
+    for c in candidate_votes:
+        c['vote_percent'] = (c['total_votes'] / total_votes * 100) if total_votes > 0 else 0
+
+    return render(request, "vote_counting.html", {
+        "admin": admin,
+        "candidate_votes": candidate_votes
+    })
+
+
+
+
+#voteing result ke liye 
+from django.db.models import Count
+
+def results_page(request, unique_code):
+    admin = get_object_or_404(AdminUser, unique_code=unique_code)
+
+    # Candidate ke through admin ko filter karna hoga
+    votes = Vote.objects.filter(candidate__admin=admin)
+
+    # Count total votes for each candidate
+    results = (
+        votes.values('candidate__name')
+             .annotate(total_votes=Count('id'))
+             .order_by('-total_votes')
+    )
+
+    return render(request, "results.html", {
+        "admin": admin,
+        "results": results
+    })
+
+
+
 
 
 

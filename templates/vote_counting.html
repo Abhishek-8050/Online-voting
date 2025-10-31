@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vote Counting</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #00c6fb, #005bea);
+      margin: 0;
+      padding: 0;
+      color: #333;
+      overflow-x: hidden;
+      animation: fadeIn 1s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 60px auto;
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      padding: 40px 50px;
+      text-align: center;
+      position: relative;
+    }
+
+    h1 {
+      color: #005bea;
+      font-size: 36px;
+      margin-bottom: 5px;
+      animation: fadeIn 1.2s ease-in;
+    }
+
+    h3 {
+      color: #555;
+      font-weight: 500;
+      margin-bottom: 30px;
+      animation: fadeIn 1.4s ease-in;
+    }
+
+    .candidate-card {
+      margin: 20px 0;
+      text-align: left;
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      animation: slideUp 0.8s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @keyframes slideUp {
+      0% { transform: translateY(40px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    .candidate-name {
+      font-size: 20px;
+      font-weight: 600;
+      color: #222;
+      margin-bottom: 8px;
+    }
+
+    .vote-count {
+      font-size: 15px;
+      color: #444;
+      margin-bottom: 10px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 18px;
+      background: #e0e0e0;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .progress {
+      height: 100%;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #00c6fb, #005bea);
+      width: 0%;
+      animation: growBar 1.5s ease forwards;
+    }
+
+    @keyframes growBar {
+      from { width: 0%; }
+      to { width: var(--progress-width); }
+    }
+
+    .count-number {
+      position: absolute;
+      top: 0;
+      right: 10px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .btn {
+      margin-top: 35px;
+      display: inline-block;
+      padding: 12px 25px;
+      background: linear-gradient(135deg, #00c6fb, #005bea);
+      color: white;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: 0.3s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+    }
+
+    .footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #777;
+    }
+
+    /* 🎉 Confetti */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #ffb347;
+      top: -10px;
+      animation: fall 3s linear infinite;
+      opacity: 0.8;
+      z-index: 1;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(100vh) rotate(720deg); }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🗳️ Vote Counting</h1>
+    <h3>Admin: {{ admin.name }} ({{ admin.unique_code }})</h3>
+
+    {% if candidate_votes %}
+      {% for c in candidate_votes %}
+        <div class="candidate-card">
+          <div class="candidate-name">{{ c.candidate__name }}</div>
+          <div class="vote-count">Total Votes: {{ c.total_votes }}</div>
+
+          <div class="progress-bar">
+            <div class="progress" style="--progress-width: {{ c.vote_percent }}%;"></div>
+            <span class="count-number">{{ c.vote_percent|floatformat:0 }}%</span>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No votes have been recorded yet.</p>
+    {% endif %}
+
+    <a href="{% url 'results' admin.unique_code %}" class="btn">📊 See Final Result</a>
+
+    <div class="footer">© {{ now|date:"Y" }} Smart Voting System | All Rights Reserved.</div>
+  </div>
+
+  <!-- Confetti animation -->
+  <script>
+    function createConfetti() {
+      const confetti = document.createElement('div');
+      confetti.classList.add('confetti');
+      confetti.style.left = Math.random() * 100 + 'vw';
+      confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 60%)`;
+      confetti.style.animationDuration = 2 + Math.random() * 3 + 's';
+      document.body.appendChild(confetti);
+      setTimeout(() => confetti.remove(), 5000);
+    }
+    setInterval(createConfetti, 200);
+  </script>
+</body>
+</html>

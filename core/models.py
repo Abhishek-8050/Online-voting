@@ -49,3 +49,13 @@ votes = models.IntegerField(default=0)
 
 
 
+class Vote(models.Model):
+    candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)
+    voted_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Vote for {self.candidate.name}"
+
+
+
+
